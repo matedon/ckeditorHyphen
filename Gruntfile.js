@@ -5,6 +5,13 @@ assetResources = {
             'bower_components/bootstrap-css/js/bootstrap.min.js',
             'bower_components/jquery.serializeJSON/jquery.serializejson.js',
             'bower_components/moment/min/moment-with-locales.min.js',
+            'public/customize/ckeditorPrepare.js',
+            'bower_components/ckeditor/ckeditor.js',
+            'bower_components/ckeditor/adapters/jquery.js',
+            'bower_components/Hyphenator/Hyphenator.js',
+            'bower_components/Hyphenator/patterns/hu.js',
+            'bower_components/Hyphenator/patterns/en.js',
+            'bower_components/Hyphenator/patterns/de.js',
             'assets/main.js'
         ]
     },
@@ -95,6 +102,37 @@ module.exports = function (grunt) {
             ],
             dest: 'public/_build/fonts/',
             filter: 'isFile'
+        },
+        ckeditor: {
+            filter: 'isFile',
+            files: [
+                {
+                    expand: true,
+                    cwd: 'bower_components/ckeditor/',
+                    src: 'contents.css',
+                    dest: 'public/_build/ckeditor/'
+                }, {
+                    expand: true,
+                    cwd: 'bower_components/ckeditor/skins/moono/',
+                    src: '**',
+                    dest: 'public/_build/ckeditor/skins/moono/'
+                }, {
+                    expand: true,
+                    cwd: 'bower_components/ckeditor/lang/',
+                    src: 'hu.js',
+                    dest: 'public/_build/ckeditor/lang/'
+                }, {
+                    expand: true,
+                    cwd: 'bower_components/ckeditor/plugins/',
+                    src: '**',
+                    dest: 'public/_build/ckeditor/plugins/'
+                }, {
+                    expand: true,
+                    cwd: 'assets/ckeditor/plugins/',
+                    src: '**',
+                    dest: 'public/_build/ckeditor/plugins/'
+                }
+            ]
         }
     };
 
@@ -127,8 +165,10 @@ module.exports = function (grunt) {
             }
         },
         general_js: {
-            files: assetResources.js.general,
-            tasks: ['uglify:general', 'task:gitadd'],
+            files: ([].concat(assetResources.js.general, [
+                'assets/ckeditor/**'
+            ])),
+            tasks: ['uglify:general', 'copy:ckeditor', 'task:gitadd'],
             options: {
                 interval: 500
             }
@@ -171,14 +211,17 @@ module.exports = function (grunt) {
         ['task:fonts', ['cssmin:fonts']],
         ['task:copy', ['copy']],
         ['task:less', ['less:main']],
-        ['default', [
+        ['basic', [
             'task:clean:build',
             'task:copy',
             'task:uglify',
             'task:less',
             'task:css',
             'task:fonts',
-            'task:gitadd',
+            'task:gitadd'
+        ]],
+        ['default', [
+            'basic',
             'task:watch'
         ]]
     ].forEach(function(input) {

@@ -2639,3 +2639,6 @@ fieldset[disabled] .btn-danger.active {
 .fa-percent:before {
   content: "\f295";
 }
+.small .ckeHyphenate {
+  background-color: rgba(200, 160, 0, 0.2);
+}

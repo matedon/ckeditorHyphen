@@ -1,2 +1,2 @@
-# tremob node
+# CKEditor Hyphen plugin
 
