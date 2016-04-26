@@ -11,6 +11,9 @@ CKEDITOR.plugins.add('hyphen', {
         };
         Hyphenator.config({
             displaytogglebox: false,
+            togglebox : function () {
+                return false;
+            },
             classname : options.className
         });
         editor.ui.addButton('hyphen', {
@@ -21,16 +24,17 @@ CKEDITOR.plugins.add('hyphen', {
         var hyphenArea = editor.addCommand('hyphenArea', {
             exec: function (editor) {
                 console.info(editor);
-                hyphenArea.setState(CKEDITOR.TRISTATE_ON);
                 var selection = editor.getSelection(),
                     start = selection.getStartElement(),
                     element = start.$,
                     $element = $(element);
                 if ($element.length) {
                     if ($element.parents().andSelf().hasClass(options.className)) {
-                        $element.html($element.html().replace(String.fromCharCode(173), ''));
+                        // $element.html($element.html().replace(String.fromCharCode(173), ''));
+                        var ancient = editor.element.$,
+                            $ancient = $(ancient);
                         Hyphenator.toggleHyphenation();
-
+                        $element.closest('body').html($ancient.val());
                         $element.removeClass(options.className);
                         hyphenArea.setState(CKEDITOR.TRISTATE_OFF);
                     } else {
